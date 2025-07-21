@@ -2,13 +2,25 @@ const express = require("express");
 const router = express.Router();
 const Job = require("../models/Job");
 
-router.get("/", async (req, res) => {
-  const limit = parseInt(req.query.limit) || 0;
+app.get("/jobs", async (req, res) => {
   try {
-    const jobs = await Job.find().limit(limit);
+    const { title, sort } = req.query;
+    const query = {};
+
+    if (title) {
+      // Wyszukiwanie stanowiska (case-insensitive)
+      query.title = { $regex: title, $options: "i" };
+    }
+
+    const sortOptions = {};
+    if (sort === "location" || sort === "seniorityLevel") {
+      sortOptions[sort] = 1; // 1 = rosnąco
+    }
+
+    const jobs = await Job.find(query).sort(sortOptions);
     res.json(jobs);
   } catch (err) {
-    res.status(500).json({ error: "Error fetching jobs" });
+    res.status(500).json({ error: "Błąd serwera" });
   }
 });
 
