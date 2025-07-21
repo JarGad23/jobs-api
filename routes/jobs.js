@@ -4,20 +4,25 @@ const Job = require("../models/Job");
 
 router.get("/", async (req, res) => {
   try {
-    const { title, sort } = req.query;
+    const { role, location, position } = req.query;
     const query = {};
 
-    if (title) {
+    if (role) {
       // Wyszukiwanie stanowiska (case-insensitive)
-      query.title = { $regex: title, $options: "i" };
+      query.role = { $regex: role, $options: "i" };
     }
 
-    const sortOptions = {};
-    if (sort === "location" || sort === "seniorityLevel") {
-      sortOptions[sort] = 1; // 1 = rosnąco
+    if (location) {
+      // Filtrowanie po lokalizacji (case-insensitive)
+      query.location = { $regex: location, $options: "i" };
     }
 
-    const jobs = await Job.find(query).sort(sortOptions);
+    if (position) {
+      // Filtrowanie po pozycji (case-insensitive)
+      query.position = { $regex: position, $options: "i" };
+    }
+
+    const jobs = await Job.find(query);
     res.json(jobs);
   } catch (err) {
     res.status(500).json({ error: "Błąd serwera" });
