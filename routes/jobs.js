@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Job = require("../models/Job");
 
-app.get("/jobs", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const { title, sort } = req.query;
     const query = {};
