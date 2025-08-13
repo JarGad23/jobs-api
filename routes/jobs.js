@@ -23,8 +23,8 @@ router.get("/", async (req, res) => {
     }
 
     // Dodajemy paginację
-    const limit = parseInt(_limit, 10) || 10;
-    const start = parseInt(_start, 10) || 0;
+    const limit = parseInt(_limit, 10);
+    const start = parseInt(_start, 10);
 
     const jobs = await Job.find(query).skip(start).limit(limit);
     res.json(jobs);
