@@ -4,7 +4,7 @@ const Job = require("../models/Job");
 
 router.get("/", async (req, res) => {
   try {
-    const { role, location, position } = req.query;
+    const { role, location, position, _limit, _start } = req.query;
     const query = {};
 
     if (role) {
@@ -22,7 +22,11 @@ router.get("/", async (req, res) => {
       query.position = { $regex: position, $options: "i" };
     }
 
-    const jobs = await Job.find(query);
+    // Dodajemy paginację
+    const limit = parseInt(_limit, 10) || 10;
+    const start = parseInt(_start, 10) || 0;
+
+    const jobs = await Job.find(query).skip(start).limit(limit);
     res.json(jobs);
   } catch (err) {
     res.status(500).json({ error: "Błąd serwera" });
